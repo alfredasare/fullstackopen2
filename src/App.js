@@ -1,29 +1,76 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import noteService from './services/notes';
+import Note from './components/Note';
 import './App.css';
 
-const Display = ({counter}) => <div>{counter}</div>
-
-const Button = ({text, handleClick}) => (
-    <button onClick={handleClick}>
-        {text}
-    </button>
-);
-
 function App() {
-    const [counter, setCounter] = useState(0);
+    const [notes, setNotes] = useState([]);
+    const [newNote, setNewNote] = useState('');
+    const [showAll, setShowAll] = useState(true);
 
-    const increaseByOne = () => setCounter(counter + 1)
+    useEffect(() => {
+        noteService.getAll()
+            .then(initialNotes => setNotes(initialNotes))
+    }, []);
 
-    const setToZero = () => setCounter(0)
+    const addNote = e => {
+        e.preventDefault();
+        const noteObject = {
+            content: newNote,
+            date: new Date().toISOString(),
+            important: Math.random() < 0.5,
+        };
 
-    const decreaseByOne = () => setCounter(counter - 1);
+        noteService.create(noteObject)
+            .then(returnedNote => {
+                setNotes(notes.concat(returnedNote));
+                setNewNote('');
+            })
+    };
+
+    const handleNoteChange = e => {
+        setNewNote(e.target.value);
+    };
+
+    const notesToShow = showAll
+        ? notes
+        : notes.filter(note => note.important);
+
+    const toggleImportanceOf = id => {
+        const note = notes.find(note => note.id === id);
+        const changedNote = {...note, important: !note.important};
+
+        noteService.update(id, changedNote)
+            .then(returnedNote => {
+                setNotes(notes.map(note => note.id !== id ? note : returnedNote));
+            })
+            .catch(error => {
+                alert(
+                    `the note '${note.content}' was already deleted from server`
+                )
+                setNotes(notes.filter(n => n.id !== id))
+            });
+    };
 
     return (
         <div>
-            <Display counter={counter} />
-            <Button handleClick={increaseByOne} text='plus'/>
-            <Button handleClick={setToZero} text='zero' />
-            <Button handleClick={decreaseByOne} text='minus' />
+            <h1>Notes</h1>
+            <div>
+                <button onClick={() => setShowAll(!showAll)}>
+                    show {showAll ? 'important': 'all'}
+                </button>
+            </div>
+            <ul>
+                {
+                    notesToShow.map(note => (
+                        <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)}/>
+                    ))
+                }
+            </ul>
+            <form onSubmit={addNote}>
+                <input type="text" value={newNote} onChange={handleNoteChange}/>
+                <button type="submit">save</button>
+            </form>
         </div>
     );
 }
