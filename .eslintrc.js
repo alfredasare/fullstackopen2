@@ -2,7 +2,7 @@ module.exports = {
     env: {
         browser: true,
         es6: true,
-        "jest/global": true
+        "jest": true
     },
     extends: [
         "eslint:recommended",
@@ -33,7 +33,7 @@ module.exports = {
         ],
         semi: [
             "error",
-            "single"
+            "always"
         ],
         eqeqeq: "error",
         "no-trailing-spaces": "error",
@@ -45,6 +45,8 @@ module.exports = {
         ],
         "no-console": 0,
         "react/prop-types": 0,
+        "react/react-in-jsx-scope": "off",
+        "import/no-anonymous-default-export": "off"
     },
     settings: {
         react: {
