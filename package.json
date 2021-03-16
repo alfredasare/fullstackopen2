@@ -20,7 +20,7 @@
     "eject": "react-scripts eject",
     "server": "json-server -p3001 --watch db.json",
     "eslint": "eslint .",
-    "eslint:fix": "eslint . --fix"
+    "eslint:fix": "eslint --fix"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {
