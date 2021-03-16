@@ -2,14 +2,25 @@ import axios from "axios";
 
 const baseUrl = '/api/notes';
 
+let token = null;
+
+const setToken = newToken => {
+    token = `bearer ${newToken}`;
+};
+
+
 const getAll = () => {
     const request = axios.get(baseUrl);
     return request.then(response => response.data);
 }
 
-const create = newObject => {
-    const request = axios.post(baseUrl, newObject);
-    return request.then(response => response.data);
+const create = async newObject => {
+    const config = {
+        headers: {Authorization: token}
+    };
+
+    const request = await axios.post(baseUrl, newObject, config);
+    return request.data;
 };
 
 const update = (id, newObject) => {
@@ -18,4 +29,4 @@ const update = (id, newObject) => {
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, create, update };
+export default { getAll, create, update, setToken };
