@@ -5,6 +5,9 @@ import Note from './components/Note';
 import './App.css';
 import Notification from "./components/Notification";
 import Footer from "./components/Footer";
+import LoginForm from "./components/LoginForm";
+import Togglable from "./components/Togglable";
+import NoteForm from "./components/NoteForm";
 
 function App() {
     const [notes, setNotes] = useState([]);
@@ -95,35 +98,30 @@ function App() {
             });
     };
 
-    const loginForm = () => (
-        <form onSubmit={handleLogin}>
+    const loginForm = () => {
+        return (
             <div>
-                username
-                <input
-                    type="text"
-                    value={username}
-                    name="Username"
-                    onChange={({target}) => setUsername(target.value)}
-                />
+                <Togglable buttonLabel="login">
+                    <LoginForm
+                        username={username}
+                        password={password}
+                        handleUsernameChange={setUsername}
+                        handlePasswordChange={setPassword}
+                        handleSubmit={handleLogin}
+                    />
+                </Togglable>
             </div>
-            <div>
-                password
-                <input
-                    type="password"
-                    value={password}
-                    name="Password"
-                    onChange={({target}) => setPassword(target.value)}
-                />
-            </div>
-            <button type="submit">login</button>
-        </form>
-    );
+        );
+    };
 
     const noteForm = () => (
-        <form onSubmit={addNote}>
-            <input type="text" value={newNote} onChange={handleNoteChange}/>
-            <button type="submit">save</button>
-        </form>
+        <Togglable buttonLabel="new note">
+            <NoteForm
+                onSubmit={addNote}
+                value={newNote}
+                handleChange={handleNoteChange}
+            />
+        </Togglable>
     );
 
     return (
@@ -146,7 +144,7 @@ function App() {
 
             <div>
                 <button onClick={() => setShowAll(!showAll)}>
-                    show {showAll ? 'important': 'all'}
+                    show {showAll ? 'important' : 'all'}
                 </button>
             </div>
 
@@ -158,7 +156,7 @@ function App() {
                 }
             </ul>
 
-            <Footer />
+            <Footer/>
         </div>
     );
 }
