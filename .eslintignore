@@ -3,3 +3,4 @@ build
 .eslintrc.js
 .idea
 src/reportWebVitals.js
+coverage
