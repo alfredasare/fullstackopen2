@@ -23,7 +23,7 @@ describe('Note app', function () {
         cy.contains('Alfred Asare logged in');
     });
 
-    it.only('login fails with wrong password', function () {
+    it('login fails with wrong password', function () {
         cy.contains('login').click();
         cy.get('#username').type('alfredasare');
         cy.get('#password').type('wrong');
@@ -38,25 +38,29 @@ describe('Note app', function () {
 
     describe('when logged in', function () {
         beforeEach(function () {
-            cy.contains('login').click();
-            cy.get('#username').type('alfredasare');
-            cy.get('#password').type('plusultra');
-            cy.get('#login-button').click();
+            cy.login({username: 'alfredasare', password: 'plusultra'});
+
+            // cy.contains('login').click();
+            // cy.get('#username').type('alfredasare');
+            // cy.get('#password').type('plusultra');
+            // cy.get('#login-button').click();
             // cy.contains('Alfred Asare logged in');
         });
 
         it('a new note can be created', function () {
-            cy.contains('new note').click();
-            cy.get('input').type('a note created by cypress');
-            cy.contains('save').click();
+            cy.createNote({
+                content: 'a note created by cypress',
+                important: false
+            });
             cy.contains('a note created by cypress');
         });
 
         describe('and a note exists', function () {
             beforeEach(function () {
-                cy.contains('new note').click();
-                cy.get('input').type('another cypress note');
-                cy.contains('save').click();
+                cy.createNote({
+                    content: 'another cypress note',
+                    important: false
+                });
             });
 
             it('can be made important', function () {
