@@ -55,23 +55,17 @@ describe('Note app', function () {
             cy.contains('a note created by cypress');
         });
 
-        describe('and a note exists', function () {
+        describe.only('and a note exists', function () {
             beforeEach(function () {
-                cy.createNote({
-                    content: 'another cypress note',
-                    important: false
-                });
+                cy.createNote({ content: 'first note', important: false });
+                cy.createNote({ content: 'second note', important: false });
+                cy.createNote({ content: 'third note', important: false });
             });
 
             it('can be made important', function () {
-                cy
-                    .contains('another cypress note')
-                    .contains('make important')
-                    .click();
-
-                cy
-                    .contains('another cypress note')
-                    .contains('make not important');
+                cy.contains('second note').parent().find('button').as('theButton');
+                cy.get('@theButton').click();
+                cy.get('@theButton').should('contain', 'make not important');
             });
         });
     });
